@@ -27,14 +27,17 @@ protected:
 	virtual void TimerAction();
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = Movement)
+	UPROPERTY(VisibleAnywhere, Category=Movement)
 	TObjectPtr<class URotatingMovementComponent> RotatingMovement;
-
-	UPROPERTY(EditAnywhere, Category = Timer)
-	float ActionPeriod;
 	
-	UPROPERTY(EditAnywhere, Category = GAS)
+	UPROPERTY(EditAnywhere, Category=Timer)
+	float ActionPeriod;
+
+	UPROPERTY(EditAnywhere, Category=GAS)
 	TObjectPtr<class UAbilitySystemComponent> ASC;
+
+	UPROPERTY(EditAnywhere, Category=GAS)
+	TArray<TSubclassOf<class UGameplayAbility>> StartAbilities;
 
 	FTimerHandle ActionTimer;
 };

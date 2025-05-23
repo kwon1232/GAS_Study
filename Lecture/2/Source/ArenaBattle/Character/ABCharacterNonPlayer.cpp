@@ -3,7 +3,6 @@
 
 #include "Character/ABCharacterNonPlayer.h"
 #include "Engine/AssetManager.h"
-#include "ArenaBattleGAS/Prop/ABGASFountain.h"
 
 AABCharacterNonPlayer::AABCharacterNonPlayer()
 {

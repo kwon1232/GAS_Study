@@ -5,10 +5,13 @@
 #include "GameFramework/RotatingMovementComponent.h"
 #include "ArenaBattleGAS.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayAbilitySpec.h"
+#include "Tag/ABGameplayTag.h"
+#include "Abilities/GameplayAbility.h"
 
 AABGASFountain::AABGASFountain()
 {
-	ASC = CreateAbstractDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
+	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
 	RotatingMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotateMovement"));
 	ActionPeriod = 3.0f;
 }
@@ -21,26 +24,23 @@ UAbilitySystemComponent* AABGASFountain::GetAbilitySystemComponent() const
 void AABGASFountain::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	
+
 	RotatingMovement->bAutoActivate = false;
 	RotatingMovement->Deactivate();
 
 	ASC->InitAbilityActorInfo(this, this);
+
+	for (const auto& StartAbility : StartAbilities)
+	{
+		FGameplayAbilitySpec StartSpec(StartAbility);
+		ASC->GiveAbility(StartSpec);
+	}
 }
- 
+
 void AABGASFountain::BeginPlay()
 {
 	Super::BeginPlay();
-	/*
-	* SetTimer(
-    * FTimerHandle& InOutHandle,		// 타이머 핸들 (반복 여부 등 제어 가능)
-    * UObject* InObj,					// 호출 대상 객체 (보통 this)
-    * FunctionPointer InTimerMethod,	// 호출할 함수 주소
-    * float InRate,						// 주기(초 단위)
-    * bool InLoop,						// 반복 여부
-    * float FirstDelay					// 처음 호출까지의 지연 시간
-	* );
-	*/
+
 	GetWorld()->GetTimerManager().SetTimer(ActionTimer, this, &AABGASFountain::TimerAction, ActionPeriod, true, 0.0f);
 }
 
@@ -48,13 +48,18 @@ void AABGASFountain::TimerAction()
 {
 	ABGAS_LOG(LogABGAS, Log, TEXT("Begin"));
 
-	if (!RotatingMovement->IsActive())
+	FGameplayTagContainer TargetTag(ABTAG_ACTOR_ROTATE);
+	
+	// 해당 스펙이 없으면
+	if(!ASC->HasMatchingGameplayTag(ABTAG_ACTOR_ISROTATING))
 	{
-		RotatingMovement->Activate(true);
+		// 해당 스팩 달아줌
+		ASC->TryActivateAbilitiesByTag(TargetTag);
 	}
-	else 
+	// 해당 스팩이 있으면
+	else
 	{
-		RotatingMovement->Deactivate();
+		ASC->CancelAbilities(&TargetTag);
 	}
-}
 
+}
