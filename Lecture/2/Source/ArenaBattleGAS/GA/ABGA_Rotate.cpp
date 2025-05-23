@@ -7,7 +7,9 @@
 
 UABGA_Rotate::UABGA_Rotate()
 {
+	// Tag 부여
 	AbilityTags.AddTag(ABTAG_ACTOR_ROTATE);
+	// 실행 시(액션 시) Tag 부여
 	ActivationOwnedTags.AddTag(ABTAG_ACTOR_ISROTATING);
 }
 
