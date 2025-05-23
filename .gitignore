@@ -12,6 +12,7 @@
 *.res
 *.pdb
 *.bin
+*.umap
 
 # Precompiled Headers
 *.gch
