@@ -8,6 +8,9 @@
 *.obj
 *.uasset
 *.ini
+*.json
+*.res
+*.pdb
 
 # Precompiled Headers
 *.gch
